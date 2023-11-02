@@ -22,7 +22,9 @@ export default function Table(){
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Rows with 12 columns go here */}
+                    <tr>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
