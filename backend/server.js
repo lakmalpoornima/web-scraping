@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const fileSubmitRoutes = require('./routes/fileSubmit');
 const items = require('./routes/item')
+const user = require('./routes/user')
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -27,6 +28,7 @@ mongoose.connect(dbUri)
 
   app.use('/filesubmit', fileSubmitRoutes);
   app.use('/items', items);
+  app.use('/user', user);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
