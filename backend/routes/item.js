@@ -1,13 +1,17 @@
 
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 const Item = require('../models/item');
+
+//app.use(cors());
 
 // GET all items
 router.get('/items', async (req, res) => {
   try {
     const items = await Item.find();
     res.json(items);
+    // console.log(items)
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching items' });

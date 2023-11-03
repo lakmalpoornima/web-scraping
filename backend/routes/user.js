@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const User = require('../models/user'); 
+
+//app.use(cors());
 
 // Register a new user
 router.post('/register', async (req, res) => {

@@ -1,56 +1,157 @@
+// import React, { useState } from 'react';
+// import { Document, Page, pdfjs } from 'react-pdf';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
+// // Set the worker URL for pdf.js
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
+// export default function File() {
+//  const [selectedFile, setSelectedFile] = useState(null);
+//  const [isModalOpen, setIsModalOpen] = useState(false);
+//  const [numPages, setNumPages] = useState(null);
+
+//  const handleFileChange = (event) => {
+//     const file = event.target.files[0];
+//     setSelectedFile(file);
+//  };
+
+//  const handlePreview = () => {
+//     if (selectedFile) {
+//       setIsModalOpen(true);
+//     } else {
+//       alert('No file selected. Please choose a file first.');
+//     }
+//  };
+
+//  const closeModal = () => {
+//     setIsModalOpen(false);
+//     setSelectedFile(null);
+//  };
+
+//  const renderPages = () => {
+//     if (numPages) {
+//       const pages = [];
+//       for (let index = 1; index <= numPages; index++) {
+//         pages.push(
+//           <Page
+//             key={`page_${index}`}
+//             pageNumber={index}
+//           />
+//         );
+//       }
+//       return pages;
+//     }
+//     return null;
+//  };
+
+//  return (
+//     <div>
+//       <h1>Open and Preview File</h1>
+//       <div className="form-group">
+//         <input type="file" onChange={handleFileChange} />
+//       </div>
+//       <button className="btn btn-primary" onClick={handlePreview}>Preview File</button>
+
+//       {isModalOpen && (
+//         <div className="modal">
+//           <div className="modal-content">
+//             <button onClick={closeModal}>Close</button>
+//             {selectedFile && selectedFile.type === 'application/pdf' ? (
+//               <div>
+//                 <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
+//                  {renderPages()}
+//                 </Document>
+//               </div>
+//             ) : (
+//               <p>This file type is not supported for preview.</p>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//  );
+// }
+
 import React, { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Set the worker URL for pdf.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+export default function FileSubmit() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [numPages, setNumPages] = useState(null);
+  const [isSupportedFormat, setIsSupportedFormat] = useState(true); // New state variable
 
-export default function File() {
- const [selectedFile, setSelectedFile] = useState(null);
- const [isModalOpen, setIsModalOpen] = useState(false);
- const [numPages, setNumPages] = useState(null);
-
- const handleFileChange = (event) => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
- };
 
- const handlePreview = () => {
+    // Check if the file format is supported (Excel or CSV)
+    if (
+      file &&
+      (file.type === 'application/vnd.ms-excel' ||
+        file.type === 'text/csv' ||
+        file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    ) {
+      setIsSupportedFormat(true);
+    } else {
+      setIsSupportedFormat(false);
+    }
+  };
+
+  const handlePreview = () => {
     if (selectedFile) {
       setIsModalOpen(true);
     } else {
       alert('No file selected. Please choose a file first.');
     }
- };
+  };
 
- const closeModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
     setSelectedFile(null);
- };
+    setIsSupportedFormat(true); // Reset format check
+  };
 
- const renderPages = () => {
-    if (numPages) {
-      const pages = [];
-      for (let index = 1; index <= numPages; index++) {
-        pages.push(
-          <Page
-            key={`page_${index}`}
-            pageNumber={index}
-          />
-        );
+  const handleFileSubmit = () => {
+    if (selectedFile) {
+      // Check if the file format is supported (Excel or CSV)
+      if (isSupportedFormat) {
+        // Perform the API request to submit the file
+        // Replace the API URL with your actual endpoint
+        fetch('http://localhost:4000/filesubmit/uploadAndAddData', {
+          method: 'POST',
+          body: selectedFile,
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log('File submitted successfully');
+              // You can add additional handling as needed
+            } else {
+              console.error('Failed to submit file');
+            }
+          })
+          .catch((error) => {
+            console.error('Error submitting file:', error);
+          });
+      } else {
+        alert('Unsupported file format. Please select an Excel or CSV file.');
       }
-      return pages;
+    } else {
+      alert('No file selected. Please choose a file first.');
     }
-    return null;
- };
+  };
 
- return (
+  return (
     <div>
-      <h1>Open and Preview File</h1>
+      <h1>Upload and Submit File</h1>
       <div className="form-group">
         <input type="file" onChange={handleFileChange} />
       </div>
-      <button className="btn btn-primary" onClick={handlePreview}>Preview File</button>
+      <button className="btn btn-primary" onClick={handlePreview}>
+        Preview File
+      </button>
+      <button className="btn btn-success" onClick={handleFileSubmit}>
+        Submit File
+      </button>
 
       {isModalOpen && (
         <div className="modal">
@@ -58,9 +159,7 @@ export default function File() {
             <button onClick={closeModal}>Close</button>
             {selectedFile && selectedFile.type === 'application/pdf' ? (
               <div>
-                <Document file={URL.createObjectURL(selectedFile)} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
-                 {renderPages()}
-                </Document>
+                <p>File preview here (PDF files)</p>
               </div>
             ) : (
               <p>This file type is not supported for preview.</p>
@@ -69,5 +168,5 @@ export default function File() {
         </div>
       )}
     </div>
- );
+  );
 }

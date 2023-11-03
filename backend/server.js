@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const fileSubmitRoutes = require('./routes/fileSubmit');
 const items = require('./routes/item')
@@ -7,6 +8,7 @@ const user = require('./routes/user')
 
 const app = express();
 const port = process.env.PORT || 4000;
+app.use(cors());
 
 // MongoDB connection URL (replace with your MongoDB Atlas connection string)
 const dbUri = 'mongodb+srv://web:123@cluster0.3lj3zei.mongodb.net/';

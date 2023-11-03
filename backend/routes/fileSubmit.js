@@ -3,6 +3,9 @@ const router = express.Router();
 const multer = require('multer');
 const XlsxPopulate = require('xlsx-populate');
 const Item = require('../models/item');
+const cors = require('cors');
+
+//app.use(cors());
 
 // Multer configuration for file uploads
 const storage = multer.memoryStorage();
@@ -35,7 +38,7 @@ router.post('/uploadAndAddData', upload.single('excelFile'), async (req, res) =>
 
       await newItem.save();
     }
-
+    console.log('Data:', data);
     res.status(201).json({ message: 'Data added to the database.' });
   } catch (err) {
     console.error('Error processing Excel file and adding data: ', err);
