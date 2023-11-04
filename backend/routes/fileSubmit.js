@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const XlsxPopulate = require('xlsx-populate');
+const XlsxPopulate = require('xlsx-populate')
 const Item = require('../models/item');
-const cors = require('cors');
 
-//app.use(cors());
 
 // Multer configuration for file uploads
 const storage = multer.memoryStorage();

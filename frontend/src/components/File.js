@@ -97,14 +97,6 @@ export default function FileSubmit() {
     }
   };
 
-  const handlePreview = () => {
-    if (selectedFile) {
-      setIsModalOpen(true);
-    } else {
-      alert('No file selected. Please choose a file first.');
-    }
-  };
-
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedFile(null);
@@ -115,11 +107,16 @@ export default function FileSubmit() {
     if (selectedFile) {
       // Check if the file format is supported (Excel or CSV)
       if (isSupportedFormat) {
+//         const fileInput = document.getElementById('fileInput');
+// const file = fileInput.files[0];
         // Perform the API request to submit the file
         // Replace the API URL with your actual endpoint
+        const formData = new FormData();
+formData.append('excelFile', selectedFile);
+
         fetch('http://localhost:4000/filesubmit/uploadAndAddData', {
           method: 'POST',
-          body: selectedFile,
+          body: formData,
         })
           .then((response) => {
             if (response.ok) {
@@ -144,11 +141,8 @@ export default function FileSubmit() {
     <div>
       <h1>Upload and Submit File</h1>
       <div className="form-group">
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" name="excelFile" id="fileInput" onChange={handleFileChange} />
       </div>
-      <button className="btn btn-primary" onClick={handlePreview}>
-        Preview File
-      </button>
       <button className="btn btn-success" onClick={handleFileSubmit}>
         Submit File
       </button>
