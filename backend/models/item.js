@@ -6,6 +6,7 @@ const itemSchema = new mongoose.Schema({
   name_brand: String,
   name_i: String,
   name_j: String,
+  name_tit:String,
   stock_status_T: String,
   stock_status_C: String,
   Wprice: String,
