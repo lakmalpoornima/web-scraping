@@ -4,6 +4,8 @@ export default function Table() {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [editItem, setEditItem] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
   const itemsPerPage = 10;
 
   const fetchDataFromBackend = () => {
@@ -20,6 +22,7 @@ export default function Table() {
   useEffect(() => {
     fetchDataFromBackend();
   }, []);
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -38,9 +41,30 @@ export default function Table() {
     // Add code here to delete the item with the specified itemId.
   };
 
+  useEffect(() => {
+    setFilteredData(
+      items.filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+ }, [searchTerm, items]);
+
   return (
     <div className="container text-center mt-5">
       <h1>Item Table</h1>
+
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+      />
+
+<button
+                   className="btn btn-primary">
+                  Export Data
+                </button>
+
       <table className="table table-bordered table-striped">
         <thead>
           <tr>
