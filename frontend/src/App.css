@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+.sidebar {
+  background-color: #333;
+  color: white;
+  height: 100%;
+  position: fixed;
+  width: 200px;
+  overflow-x: hidden;
+ }
+ 
+ .menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+ }
+ 
+ .menu li {
+  padding: 10px;
+  cursor: pointer;
+ }
+ 
+ .menu li:hover {
+  background-color: #111;
+ }
+ 
+ .active {
+  background-color: #4CAF50;
+ }
