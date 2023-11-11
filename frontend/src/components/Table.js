@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 export default function Table() {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [editItem, setEditItem] = useState(null);
+  // const [editItem, setEditItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+  // const [filteredData, setFilteredData] = useState([]);
   const itemsPerPage = 10;
 
   const fetchDataFromBackend = () => {
@@ -33,7 +33,7 @@ export default function Table() {
   };
 
   const openEditModal = (item) => {
-    setEditItem(item);
+    // setEditItem(item);
     // Add code here to display a modal for editing with form fields pre-filled with item data.
   };
 
@@ -41,13 +41,34 @@ export default function Table() {
     // Add code here to delete the item with the specified itemId.
   };
 
-  useEffect(() => {
-    setFilteredData(
-      items.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
- }, [searchTerm, items]);
+//   useEffect(() => {
+//     setFilteredData(
+//       items.filter(item =>
+//         item.name.toLowerCase().includes(searchTerm.toLowerCase())
+//       )
+//     );
+//  }, [searchTerm, items]);
+
+const handleExport = async () => {
+  try {
+    const response = await fetch('http://localhost:4000/filesubmit/export');
+    const blob = await response.blob();
+
+    // Create a link element
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'items.xlsx';
+
+    // Append the link to the document and trigger a click
+    document.body.appendChild(link);
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error exporting data:', error);
+  }
+};
 
   return (
     <div className="container text-center mt-5">
@@ -60,10 +81,9 @@ export default function Table() {
         onChange={e => setSearchTerm(e.target.value)}
       />
 
-<button
-                   className="btn btn-primary">
-                  Export Data
-                </button>
+<button className="btn btn-primary" onClick={handleExport}>
+      Export Data
+    </button>
 
       <table className="table table-bordered table-striped">
         <thead>

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
+const Mongoose = require('mongoose')
 const multer = require('multer');
 const XlsxPopulate = require('xlsx-populate')
 const Item = require('../models/item');
@@ -47,11 +49,11 @@ router.post('/uploadAndAddData', upload.single('excelFile'), async (req, res) =>
   }
 });
 
-router.get('/items/export', async (req, res) => {
+router.get('/exportold', async (req, res) => {
   try {
     const items = await Item.find();
     res.json(items);
-    //console.log(items)
+    console.log(items)
    
     // const csvWriter = createCsvWriter({
     //   path: "G:/robotikka/items.csv",
@@ -102,6 +104,7 @@ worksheet.columns = [
 ];
 
 items.forEach((item) => {
+  const values = Object.values(item.toObject());
   worksheet.addRow(item);
 });
 
@@ -120,5 +123,58 @@ workbook.xlsx.writeFile('item.xlsx')
     res.status(500).json({ message: 'Error fetching items' });
   }
 });
+
+
+router.get('/export', async (req, res) => {
+  try {
+    const items = await Item.find();
+    //res.json(items);
+    
+    const itemsWithoutId = items.map(item => {
+      const { _id,__v, ...itemWithoutId } = item.toObject(); // Convert Mongoose document to plain JavaScript object
+      return itemWithoutId;
+    });
+    console.log(itemsWithoutId)
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('items');
+  
+    worksheet.columns = [
+      { header: "PId", key: "PId" },
+      { header: "categories", key: "categories" },
+      { header: "name_brand", key: "name_brand" },
+      { header: "name_i", key: "name_i"},
+      { header: "name_j", key: "name_j" },
+      { header: "name_tit", key: "name_tit" },
+      { header: "stock_status_T", key: "stock_status_T" },
+      { header: "stock_status_C", key: "stock_status_C"},
+      { header: "Wprice", key: "Wprice" },
+      { header: "Psp", key: "Psp"},
+      { header: "Pinfo", key: "Pinfo" },
+      { header: "Pinfo2", key: "Pinfo2" },
+      { header: "Blink", key: "Blink" },
+      { header: "img_links", key: "img_links" },
+    ];
+
+
+    worksheet.columns = Object.keys(itemsWithoutId[0]).map(header => ({ header, key: header }));
+    
+    itemsWithoutId.forEach((item) => {
+      worksheet.addRow(item);
+    });
+  
+    // Set response headers for file download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="items.xlsx"');
+  
+    // Send the Excel file as the response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error exporting items' });
+  }
+});
+
+
 
 module.exports = router;
