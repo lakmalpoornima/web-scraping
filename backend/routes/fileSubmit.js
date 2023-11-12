@@ -40,11 +40,10 @@ router.post('/uploadAndAddData', upload.single('excelFile'), async (req, res) =>
       });
       await newItem.save();
     }
-    console.log('Data:', data);
     res.status(201).json({ message: 'Data added to the database.' });
   } catch (err) {
     console.error('Error processing Excel file and adding data: ', err);
-    console.log('Data:', data); // Log the data for debugging purposes
+    
     res.status(500).send('Error processing Excel file and adding data.');
   }
 });
@@ -134,7 +133,7 @@ router.get('/export', async (req, res) => {
       const { _id,__v, ...itemWithoutId } = item.toObject(); // Convert Mongoose document to plain JavaScript object
       return itemWithoutId;
     });
-    console.log(itemsWithoutId)
+    //console.log(itemsWithoutId)
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('items');
   
