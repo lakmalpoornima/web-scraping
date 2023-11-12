@@ -16,7 +16,7 @@ function App() {
         <nav>
           <ul className="nav nav-pills flex-column mb-auto">
             <li className='nav-item'>
-              <Link to="/" className='nav-link text-white'>Table</Link>
+              <Link to="/" className='nav-link text-white'> Table</Link>
             </li>
             <li className='nav-item'>
               <Link to="/form" className='nav-link text-white'>Form</Link>
