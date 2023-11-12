@@ -214,17 +214,17 @@ const handleExport = async () => {
           {filteredItems.map((item, index) => (
         <tr key={item._id} >
           <td>{item.PId}</td>
-          <td>{item.categories}</td>
+          <td><div className="scrollTable">{item.categories}</div></td>
           <td>{item.name_brand}</td>
           <td>{item.name_i}</td>
           <td>{item.name_j}</td>
           <td>{item.stock_status_T}</td>
           <td>{item.stock_status_C}</td>
           <td>{item.Wprice}</td>
-          <td>{item.Psp}</td>
-          <td >{item.Pinfo}</td>
+          <td><div className="scrollTable">{item.Psp}</div></td>
+          <td ><div className="scrollTable">{item.Pinfo}</div></td>
           <td>{item.Blink}</td>
-          <td>{item.img_links}</td>
+          <td><div className="scrollTable">{item.img_links}</div></td>
           <td>
                 <button
                   onClick={() => openEditModal(item)}

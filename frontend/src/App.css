@@ -70,12 +70,14 @@
   overflow: hidden;
 }
 
+td{
+  height: 100px;
+  min-width: 80px;
+  max-width: 200px ;
+}
 
 
-
-td {
-  overflow: hidden;
- 
- height:400px; 
-  
+.scrollTable{
+  overflow-y:scroll;
+  height:100px !important;
 }

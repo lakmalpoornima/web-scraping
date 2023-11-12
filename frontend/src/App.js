@@ -11,8 +11,8 @@ function App() {
   return (
     
       <Router>
-      <div className="App d-flex flex-nowrap">
-        <div className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+      {/* <div className="App d-flex flex-nowrap"> */}
+        {/* <div className="d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
         <nav>
           <ul className="nav nav-pills flex-column mb-auto">
             <li className='nav-item'>
@@ -26,14 +26,14 @@ function App() {
             </li>
           </ul>
         </nav>
-        </div>
+        </div> */}
 
         <Routes>
           <Route path="/" element={<Table />} />
           <Route path="/form" element={<Form />} />
           <Route path="/file" element={<File />} />
         </Routes>
-      </div>
+      {/* </div> */}
     </Router>
 
       
