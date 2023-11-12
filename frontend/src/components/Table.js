@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../src/App.css';
 import { Button, Form, Modal } from 'react-bootstrap';
 
 export default function Table() {
@@ -10,12 +11,10 @@ export default function Table() {
   const [filteredItems, setFilteredItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  const [formData, setFormData] = useState({
-    // PId: editItem.PId,
-    //categories: editItem.categories,
-    //name_brand: editItem.name_brand,
-    // Add more fields as needed
-  });
+  const [formData, setFormData] = useState({});
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemIdToDelete, setItemIdToDelete] = useState(null);
+
 
   const itemsPerPage = 10;
 
@@ -53,15 +52,26 @@ export default function Table() {
     setCurrentPage(pageNumber);
   };
 
-  // const openEditModal = (item) => {
-  //   // setEditItem(item);
-  //   // Add code here to display a modal for editing with form fields pre-filled with item data.
-  // };
-
   const openEditModal = (item) => {
     setEditItem(item);
     setIsModalOpen(true);
-    console.log("buttn work",item)
+    //console.log(item)
+    setFormData({
+      itemId : item._id,
+      PId: item.PId,
+      categories: item.categories,
+      name_brand: item.name_brand,
+      name_i : item.name_i,
+      name_j :  item.name_j,
+      stock_status_T:item.stock_status_T,
+      stock_status_C:item.stock_status_C,
+      Wprice: item.Wprice,
+      Psp:item.Psp,
+      Pinfo:item.Pinfo,
+      Blink:item.Blink,
+      img_links:item.img_links,
+      
+    });
 
   };
 
@@ -70,49 +80,73 @@ export default function Table() {
     setIsModalOpen(false);
   };
 
-  const updateItem = async (itemId, newData) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  
+
+  const handleSubmit = async () => {
+    const itemId = formData.itemId;
     try {
-      const response = await fetch(`http://localhost:4000/items/${itemId}`, {
+      const response = await fetch(`http://localhost:4000/items/items/${itemId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newData),
+        body: JSON.stringify(formData),
       });
   
       if (response.ok) {
-        // Update the items state or refetch the data from the backend
-        fetchDataFromBackend();
+        // Item updated successfully
+        console.log('Item updated successfully');
       } else {
+        // Handle error case
         console.error('Failed to update item');
       }
     } catch (error) {
       console.error('Error updating item:', error);
     }
   };
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+
+  const deleteItem = (item) => {
+    setItemIdToDelete(item);
+    setShowConfirmModal(true);
+    console.log("model",item)
   };
   
+  const confirmDelete = async () => {
+    console.log("confirm",itemIdToDelete)
+    const itemId = itemIdToDelete._id
+    console.log("confirm id",itemId)
+    try {
+      const response = await fetch(`http://localhost:4000/items/items/${itemId}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        // Item deleted successfully
+        console.log('Item deleted successfully');
+        window.location.reload();
+  
+        // Update the state to remove the deleted item
+        //setItems((prevItems) => prevItems.filter((item) => item._id !== itemIdToDelete));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Call a function to update the item with the new data
-    updateItem(editItem._id, formData);
-    // Close the modal
-    closeEditModal();
+      } else {
+        // Handle error case
+        console.error('Failed to delete item');
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    } finally {
+      // Close the confirmation modal
+      setShowConfirmModal(false);
+    }
   };
 
-  const deleteItem = (itemId) => {
-    // Add code here to delete the item with the specified itemId.
-  };
-
- 
+  
 
 const handleExport = async () => {
   try {
@@ -139,20 +173,28 @@ const handleExport = async () => {
     <div className="container text-center mt-5">
       <h1>Item Table</h1>
 
-      <input
+<div className='row justify-content-between'>
+  <div className='col-6'>
+    
+  <input
         type="text"
         placeholder="Search..."
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
+        class="form-control mr-sm-2 mb-2"
       />
-
-<button className="btn btn-primary" onClick={handleExport}>
+  </div>
+     <div className='col-4'>
+     <button className="btn btn-primary" onClick={handleExport}>
       Export Data
     </button>
+      </div> 
 
+
+    </div>
       <table className="table table-bordered table-striped">
         <thead>
-          <tr>
+          <tr >
             <th>PId</th>
             <th>categories</th>
             <th>name_brand</th>
@@ -170,7 +212,7 @@ const handleExport = async () => {
         </thead>
         <tbody>
           {filteredItems.map((item, index) => (
-        <tr key={item._id}>
+        <tr key={item._id} >
           <td>{item.PId}</td>
           <td>{item.categories}</td>
           <td>{item.name_brand}</td>
@@ -180,7 +222,7 @@ const handleExport = async () => {
           <td>{item.stock_status_C}</td>
           <td>{item.Wprice}</td>
           <td>{item.Psp}</td>
-          <td>{item.Pinfo}</td>
+          <td >{item.Pinfo}</td>
           <td>{item.Blink}</td>
           <td>{item.img_links}</td>
           <td>
@@ -191,7 +233,7 @@ const handleExport = async () => {
                   Edit
                 </button>
                 <button
-                  onClick={() => deleteItem(item._id)}
+                  onClick={() => deleteItem(item)}
                   className="btn btn-danger"
                 >
                   Delete
@@ -249,6 +291,88 @@ const handleExport = async () => {
         onChange={handleChange}
       />
     </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>name_i</Form.Label>
+      <Form.Control
+        type="text"
+        name="name_i"
+        value={formData.name_i}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>name_j</Form.Label>
+      <Form.Control
+        type="text"
+        name="name_j"
+        value={formData.name_j}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>stock_status_T</Form.Label>
+      <Form.Control
+        type="text"
+        name="stock_status_T"
+        value={formData.stock_status_T}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>stock_status_C</Form.Label>
+      <Form.Control
+        type="text"
+        name="stock_status_C"
+        value={formData.stock_status_C}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>Wprice</Form.Label>
+      <Form.Control
+        type="text"
+        name="Wprice"
+        value={formData.Wprice}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>Psp</Form.Label>
+      <Form.Control
+        type="text"
+        name="Psp"
+        value={formData.Psp}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>Pinfo</Form.Label>
+      <Form.Control
+        type="text"
+        name="Pinfo"
+        value={formData.Pinfo}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>Blink</Form.Label>
+      <Form.Control
+        type="text"
+        name="Blink"
+        value={formData.Blink}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    <Form.Group controlId="formNameBrand">
+      <Form.Label>img_links</Form.Label>
+      <Form.Control
+        type="text"
+        name="img_links"
+        value={formData.img_links}
+        onChange={handleChange}
+      />
+    </Form.Group>
+    
     {/* Add more form fields as needed */}
     <Button variant="primary" type="submit">
       Save Changes
@@ -262,6 +386,24 @@ const handleExport = async () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      </div>
+      <div>
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
+  <Modal.Header closeButton>
+    <Modal.Title>Confirm Delete</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    Are you sure you want to delete this item?
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+      Cancel
+    </Button>
+    <Button variant="danger" onClick={confirmDelete}>
+      Delete
+    </Button>
+  </Modal.Footer>
+</Modal>
       </div>
     </div>
   );

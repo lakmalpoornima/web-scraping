@@ -64,3 +64,18 @@
  .active {
   background-color: #4CAF50;
  }
+
+ .fixed-height-row {
+  height: 100px; /* Set the desired height */
+  overflow: hidden;
+}
+
+
+
+
+td {
+  overflow: hidden;
+ 
+ height:400px; 
+  
+}
