@@ -91,3 +91,9 @@ td {
   align-items: center;
   justify-content: center;
 }
+
+
+.scrollTable{
+  overflow-y:scroll;
+  height:400px !important;
+}
