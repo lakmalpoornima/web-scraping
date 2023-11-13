@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../src/App.css';
 import { Button, Form, Modal } from 'react-bootstrap';
+import PulseLoader from "react-spinners/PulseLoader"
 
 export default function Table() {
   const [items, setItems] = useState([]);
@@ -169,9 +170,18 @@ const handleExport = async () => {
   }
 };
 
+//loader spinner 
+const [loading , setloading] = useState (false)
+useEffect(()=> {
+  setloading(true)
+  setTimeout(()=>{
+    setloading(false)
+  },5000)
+},[])
   return (
     <div className="container text-center mt-5">
-      <h1>Item Table</h1>
+      
+     <h1>Item Table</h1>
 
 <div className='row justify-content-between'>
   <div className='col-6'>
@@ -192,6 +202,9 @@ const handleExport = async () => {
 
 
     </div>
+    { loading?
+      <PulseLoader color="#3684d6" className='loader' />
+      : 
       <table className="table table-bordered table-striped">
         <thead>
           <tr >
@@ -210,7 +223,10 @@ const handleExport = async () => {
             <th>Action</th> {/* Added for Edit and Delete buttons */}
           </tr>
         </thead>
-        <tbody>
+
+        
+
+<tbody>
           {filteredItems.map((item, index) => (
         <tr key={item._id} >
           <td>{item.PId}</td>
@@ -242,7 +258,9 @@ const handleExport = async () => {
         </tr>
       ))}
         </tbody>
-      </table>
+      </table>  
+    }
+      
 
       <div>
         <ul className="pagination">

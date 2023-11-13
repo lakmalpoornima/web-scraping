@@ -84,7 +84,10 @@ main{
 }
 td {
   overflow: hidden;
- 
- height:400px; 
+  height:400px; 
   
+}
+.loader{
+  align-items: center;
+  justify-content: center;
 }
