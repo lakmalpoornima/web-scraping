@@ -255,7 +255,7 @@ useEffect(()=> {
       <PulseLoader color="#3684d6" className='loader' />
       : 
       
-      <table className="table table-bordered table-striped">
+      <table className="table table-bordered table-striped ">
         <thead>
           <tr >
             <th>PId</th>
