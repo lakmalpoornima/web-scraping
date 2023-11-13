@@ -1,75 +1,50 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../App.css'
+import { NavLink } from 'react-router-dom';
+import '../../src/App.css';
 
-const Sidebar = () => {
- const [active, setActive] = useState(1);
-
- const toggle = tab => {
-    if (active !== tab) setActive(tab);
- };
+const Sidebar = ({children}) => {
+  const[isOpen ,setIsOpen] = useState(false);
+  const toggle = () => setIsOpen (!isOpen);
+  const menuItem=[
+      {
+          path:"/",
+          name:"Table",
+          icon:<i class="bi bi-table"></i>
+      },
+      {
+          path:"/form",
+          name:"Form",
+          icon:<i class="bi bi-input-cursor-text"></i>
+      },
+      {
+          path:"/file",
+          name:"File",
+          icon:<i class="bi bi-file-earmark-arrow-up"></i>
+      },
+      
+  ]
 
  return (
-  <div>
-    <div className="sidebar">
-      {/* <ul className="menu">
-        <li
-          className={active === 1 ? 'active' : null}
-          onClick={() => toggle(1)}
-        >
-          <Link to="/">Table</Link>
-        </li>
-        <li
-          className={active === 2 ? 'active' : null}
-          onClick={() => toggle(2)}
-        >
-          <Link to="/form">Form</Link>
-        </li>
-        <li
-          className={active === 3 ? 'active' : null}
-          onClick={() => toggle(3)}
-        >
-          <Link to="/file">File</Link>
-        </li>
-      </ul> */}
-    </div>
-    <div>
-    <div class="sidebar" role="cdb-sidebar">
-  <div class="sidebar-container">
-    <div class="sidebar-header">
-      <a class="sidebar-brand">Contrast</a>
-      <a class="sidebar-toggler"><i class="fa fa-bars"></i></a>
-    </div>
-    <div class="sidebar-nav">
-      <div class="sidenav">
-        <a class="sidebar-item">
-          <div class="sidebar-item-content">
-            <i class="fa fa-th-large sidebar-icon sidebar-icon-lg"></i>
-            <span>Dashboard</span>
-            <div class="suffix">
-              <div class="badge rounded-pill bg-danger">new</div>
-            </div>
+  <div className="containerr">
+  <div style={{width: isOpen ? "200px" : "250px"}} className="sidebar">
+      <div className="top_section">
+          <h1 className="logo">WEB Scraping</h1>
+          <div style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
+          <i class="bi bi-list" onClick={toggle}></i>
           </div>
-        </a>
-        <a class="sidebar-item">
-          <div class="sidebar-item-content">
-            <i class="fa fa-sticky-note sidebar-icon"></i>
-            <span>Components</span>
-          </div>
-        </a>
-        <a class="sidebar-item">
-          <div class="sidebar-item-content">
-            <i class="fa fa-sticky-note sidebar-icon"></i>
-            <span>Bootstrap</span>
-          </div>
-        </a>
       </div>
-      <div class="sidebar-footer">Sidebar Footer</div>
-    </div>
+      {
+          menuItem.map((item, index)=>(
+              <NavLink to={item.path} key={index} className="link" activeclassName="active">
+                  <div className="icon">{item.icon}</div>
+                  <div className="link_text">{item.name}</div>
+              </NavLink>
+          ))
+      }
   </div>
+  <main>{children}</main>
 </div>
-    </div>
-    </div>
+// style={{display: isOpen ? "block" : "none"}} 
  );
 };
 

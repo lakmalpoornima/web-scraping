@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../src/App.css';
 import { Button, Form, Modal } from 'react-bootstrap';
+import PulseLoader from "react-spinners/PulseLoader"
 
 export default function Table() {
   const [items, setItems] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  
   //const [editItem, setEditItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
@@ -16,7 +17,7 @@ export default function Table() {
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
 
-  const itemsPerPage = 10;
+ 
 
   useEffect(() => {
     setFilteredItems(
@@ -43,14 +44,31 @@ export default function Table() {
     fetchDataFromBackend();
   }, []);
 
-
+//pagination 
+const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 2;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+  const npage = Math.ceil(items.length / itemsPerPage)
+  const numbers = [...Array(npage + 1).keys()].slice(1)
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+
+function prePage() {
+  if (currentPage !== 1){
+    setCurrentPage (currentPage - 1)
+  }
+}
+
+function changeCPage(id) {
+  setCurrentPage(id);
+}
+
+function nextPage () {
+  if ( currentPage !== npage ) {
+    setCurrentPage (currentPage + 1)
+  }
+}
 
   const openEditModal = (item) => {
     setEditItem(item);
@@ -169,9 +187,18 @@ const handleExport = async () => {
   }
 };
 
+//loader spinner 
+const [loading , setloading] = useState (false)
+useEffect(()=> {
+  setloading(true)
+  setTimeout(()=>{
+    setloading(false)
+  },5000)
+},[])
   return (
     <div className="container text-center mt-5">
-      <h1>Item Table</h1>
+      
+     <h1>Item Table</h1>
 
 <div className='row justify-content-between'>
   <div className='col-6'>
@@ -192,6 +219,42 @@ const handleExport = async () => {
 
 
     </div>
+    <div>
+      {/* pagination       */}
+      <nav>
+        <ul className="pagination">
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={prePage}>
+              Prev
+            </a>
+          </li>
+          {numbers.map((n, i) => (
+            <li
+              className={`page-item ${currentPage === n ? 'active' : ''}`}
+              key={i}
+            >
+              <a
+                href="#"
+                className="page-link"
+                onClick={() => changeCPage(n)}
+              >
+                {n}
+              </a>
+            </li>
+          ))}
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={nextPage}>
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
+      </div>
+      
+    { loading?
+      <PulseLoader color="#3684d6" className='loader' />
+      : 
+      
       <table className="table table-bordered table-striped">
         <thead>
           <tr >
@@ -210,22 +273,22 @@ const handleExport = async () => {
             <th>Action</th> {/* Added for Edit and Delete buttons */}
           </tr>
         </thead>
-        <tbody>
-          {filteredItems.map((item, index) => (
-        <tr key={item._id} >
-          <td>{item.PId}</td>
-          <td><div className="scrollTable">{item.categories}</div></td>
-          <td>{item.name_brand}</td>
-          <td>{item.name_i}</td>
-          <td>{item.name_j}</td>
-          <td>{item.stock_status_T}</td>
-          <td>{item.stock_status_C}</td>
-          <td>{item.Wprice}</td>
-          <td><div className="scrollTable">{item.Psp}</div></td>
-          <td ><div className="scrollTable">{item.Pinfo}</div></td>
-          <td>{item.Blink}</td>
-          <td><div className="scrollTable">{item.img_links}</div></td>
-          <td>
+      <tbody>
+          {currentItems.map((item, index) => (
+       <tr key={item._id} >
+       <td>{item.PId}</td>
+       <td><div className="scrollTable">{item.categories}</div></td>
+       <td>{item.name_brand}</td>
+       <td>{item.name_i}</td>
+       <td>{item.name_j}</td>
+       <td>{item.stock_status_T}</td>
+       <td>{item.stock_status_C}</td>
+       <td>{item.Wprice}</td>
+       <td><div className="scrollTable">{item.Psp}</div></td>
+       <td ><div className="scrollTable">{item.Pinfo}</div></td>
+       <td>{item.Blink}</td>
+       <td><div className="scrollTable">{item.img_links}</div></td>
+<td>
                 <button
                   onClick={() => openEditModal(item)}
                   className="btn btn-primary"
@@ -242,18 +305,40 @@ const handleExport = async () => {
         </tr>
       ))}
         </tbody>
-      </table>
+      </table>  
+    }
+      
 
       <div>
+      {/* pagination       */}
+      <nav>
         <ul className="pagination">
-          {Array.from({ length: Math.ceil(items.length / itemsPerPage) }, (_, i) => (
-            <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-              <button onClick={() => paginate(i + 1)} className="page-link">
-                {i + 1}
-              </button>
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={prePage}>
+              Prev
+            </a>
+          </li>
+          {numbers.map((n, i) => (
+            <li
+              className={`page-item ${currentPage === n ? 'active' : ''}`}
+              key={i}
+            >
+              <a
+                href="#"
+                className="page-link"
+                onClick={() => changeCPage(n)}
+              >
+                {n}
+              </a>
             </li>
           ))}
+          <li className="page-item">
+            <a href="#" className="page-link" onClick={nextPage}>
+              Next
+            </a>
+          </li>
         </ul>
+      </nav>
       </div>
       <div>
       <Modal show={isModalOpen} onHide={closeEditModal}>
@@ -406,5 +491,5 @@ const handleExport = async () => {
 </Modal>
       </div>
     </div>
- </div> );
+  );
 }
