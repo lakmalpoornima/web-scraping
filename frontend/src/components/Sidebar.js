@@ -1,37 +1,50 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../App.css'
+import { NavLink } from 'react-router-dom';
+import '../../src/App.css';
 
-const Sidebar = () => {
- const [active, setActive] = useState(1);
-
- const toggle = tab => {
-    if (active !== tab) setActive(tab);
- };
+const Sidebar = ({children}) => {
+  const[isOpen ,setIsOpen] = useState(false);
+  const toggle = () => setIsOpen (!isOpen);
+  const menuItem=[
+      {
+          path:"/",
+          name:"Table",
+          icon:<i class="bi bi-table"></i>
+      },
+      {
+          path:"/form",
+          name:"Form",
+          icon:<i class="bi bi-input-cursor-text"></i>
+      },
+      {
+          path:"/file",
+          name:"File",
+          icon:<i class="bi bi-file-earmark-arrow-up"></i>
+      },
+      
+  ]
 
  return (
-    <div className="sidebar">
-      <ul className="menu">
-        <li
-          className={active === 1 ? 'active' : null}
-          onClick={() => toggle(1)}
-        >
-          <Link to="/">Table</Link>
-        </li>
-        <li
-          className={active === 2 ? 'active' : null}
-          onClick={() => toggle(2)}
-        >
-          <Link to="/form">Form</Link>
-        </li>
-        <li
-          className={active === 3 ? 'active' : null}
-          onClick={() => toggle(3)}
-        >
-          <Link to="/file">File</Link>
-        </li>
-      </ul>
-    </div>
+  <div className="containerr">
+  <div style={{width: isOpen ? "200px" : "250px"}} className="sidebar">
+      <div className="top_section">
+          <h1 className="logo">WEB Scraping</h1>
+          <div style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
+          <i class="bi bi-list" onClick={toggle}></i>
+          </div>
+      </div>
+      {
+          menuItem.map((item, index)=>(
+              <NavLink to={item.path} key={index} className="link" activeclassName="active">
+                  <div className="icon">{item.icon}</div>
+                  <div className="link_text">{item.name}</div>
+              </NavLink>
+          ))
+      }
+  </div>
+  <main>{children}</main>
+</div>
+// style={{display: isOpen ? "block" : "none"}} 
  );
 };
 

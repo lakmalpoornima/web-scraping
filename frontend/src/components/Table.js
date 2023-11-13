@@ -406,5 +406,5 @@ const handleExport = async () => {
 </Modal>
       </div>
     </div>
- </div> );
+  );
 }
