@@ -389,6 +389,7 @@ useEffect(()=> {
         name="PId"
         value={formData.PId}
         onChange={handleChange}
+        readOnly
       /> 
     </Form.Group>
     <Form.Group controlId="formCategories">
