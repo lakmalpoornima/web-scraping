@@ -25,6 +25,7 @@ export default function Table() {
         item.PId.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
+    console.log(filteredItems)
   }, [searchTerm, items]);
 
 
@@ -46,7 +47,7 @@ export default function Table() {
 
 //pagination 
 const [currentPage, setCurrentPage] = useState(1);
-const itemsPerPage = 2;
+const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
@@ -273,10 +274,11 @@ useEffect(()=> {
             <th>Action</th> {/* Added for Edit and Delete buttons */}
           </tr>
         </thead>
-      <tbody>
-          {currentItems.map((item, index) => (
-       <tr key={item._id} >
-       <td>{item.PId}</td>
+        <tbody>
+  {searchTerm
+    ? filteredItems.map((item, index) => (
+        <tr key={item._id}>
+          <td>{item.PId}</td>
        <td><div className="scrollTable">{item.categories}</div></td>
        <td>{item.name_brand}</td>
        <td>{item.name_i}</td>
@@ -288,23 +290,54 @@ useEffect(()=> {
        <td ><div className="scrollTable">{item.Pinfo}</div></td>
        <td>{item.Blink}</td>
        <td><div className="scrollTable">{item.img_links}</div></td>
-<td>
-                <button
-                  onClick={() => openEditModal(item)}
-                  className="btn btn-primary"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => deleteItem(item)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </td>
+          <td>
+            <button
+              onClick={() => openEditModal(item)}
+              className="btn btn-primary"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => deleteItem(item)}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))
+    : currentItems.map((item, index) => (
+        <tr key={item._id}>
+          <td>{item.PId}</td>
+       <td><div className="scrollTable">{item.categories}</div></td>
+       <td>{item.name_brand}</td>
+       <td>{item.name_i}</td>
+       <td>{item.name_j}</td>
+       <td>{item.stock_status_T}</td>
+       <td>{item.stock_status_C}</td>
+       <td>{item.Wprice}</td>
+       <td><div className="scrollTable">{item.Psp}</div></td>
+       <td ><div className="scrollTable">{item.Pinfo}</div></td>
+       <td>{item.Blink}</td>
+       <td><div className="scrollTable">{item.img_links}</div></td>
+          <td>
+            <button
+              onClick={() => openEditModal(item)}
+              className="btn btn-primary"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => deleteItem(item)}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
+          </td>
         </tr>
       ))}
-        </tbody>
+</tbody>
+
       </table>  
     }
       
