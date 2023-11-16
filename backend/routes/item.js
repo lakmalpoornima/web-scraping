@@ -36,16 +36,46 @@ router.get('/items/:id', async (req, res) => {
   
 
 // POST a new item
+// router.post('/items', async (req, res) => {
+//   try {
+//     const newItem = new Item(req.body); 
+//     const existingItem = await Item.findOne({ PId: newItem.PId });
+
+//       if (!existingItem) {
+        
+//         const newItems = new Item(newItem);
+//         await newItems.save();
+//       } else {
+        
+//       }
+
+//     // await newItem.save();
+
+//     res.status(201).json({ message: 'Item added to the database', item: newItem });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Error adding the item' });
+//   }
+// });
 router.post('/items', async (req, res) => {
   try {
-    const newItem = new Item(req.body); // Assuming you are sending the item data in the request body
-    await newItem.save();
-    res.status(201).json({ message: 'Item added to the database', item: newItem });
+    const newItem = new Item(req.body);
+    const existingItem = await Item.findOne({ PId: newItem.PId });
+
+    if (!existingItem) {
+      // If the item does not exist, save the new item
+      await newItem.save();
+      res.status(201).json({ message: 'Item added to the database', item: newItem });
+    } else {
+      // If the item already exists, you might want to handle this case
+      res.status(409).json({ message: 'Item with the same PId already exists' });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error adding the item' });
   }
 });
+
 
 // UPDATE an item by ID
 router.put('/items/:id', async (req, res) => {

@@ -20,6 +20,8 @@ router.post('/uploadAndAddData', upload.single('excelFile'), async (req, res) =>
     const sheet = workbook.sheet(0);
 
     const data = sheet.usedRange().value();
+    let rowsAdded = 0;
+    let rowsRejected = 0;
 
     for (let i = 1; i < data.length; i++) {
       const newItem = new Item({
@@ -38,8 +40,23 @@ router.post('/uploadAndAddData', upload.single('excelFile'), async (req, res) =>
           Blink: data[i][12],
           img_links: data[i][13],
       });
-      await newItem.save();
+      // await newItem.save();
+      const existingItem = await Item.findOne({ PId: newItem.PId });
+
+      if (!existingItem) {
+        
+        const newItems = new Item(newItem);
+        await newItems.save();
+        rowsAdded++;
+      } else {
+        
+        rowsRejected++;
+      }
     }
+
+    console.log(`Rows added: ${rowsAdded}`);
+    console.log(`Rows rejected: ${rowsRejected}`);
+    
     res.status(201).json({ message: 'Data added to the database.' });
   } catch (err) {
     console.error('Error processing Excel file and adding data: ', err);

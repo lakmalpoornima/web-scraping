@@ -7,7 +7,22 @@ export default function FileSubmit() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSupportedFormat, setIsSupportedFormat] = useState(true); // New state variable
   const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
+  const[modelShow,setModelShow] = useState(false)
 
+  const onClick =() =>{
+    setModelShow(true)
+    console.log(modelShow)
+  }
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  
+    // Clear the alert after a few seconds
+    setTimeout(() => {
+      setAlertMessage(null);
+    }, 3000); // Adjust the time as needed
+  };
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -40,9 +55,11 @@ formData.append('excelFile', selectedFile);
           .then((response) => {
             if (response.ok) {
               console.log('File submitted successfully');
+              showAlert('File submitted successfully');
 
             } else {
               console.error('Failed to submit file');
+              showAlert('Failed to submit file');
             }
           })
           .catch((error) => {
@@ -77,7 +94,7 @@ formData.append('excelFile', selectedFile);
       </button>
       </div>
     </div>
-    <div>
+    <div className="loader-container">
     {loading && (
         <div className="d-flex justify-content-center align-items-center">
           <Spinner animation="border" role="status">
@@ -85,6 +102,15 @@ formData.append('excelFile', selectedFile);
           </Spinner>
         </div>
       )}
+    </div>
+        
+        <div className="fixed-top">
+    {alertMessage && (
+  <div className={`alert ${alertMessage.includes('success') ? 'alert-success' : 'alert-danger'}`}>
+    {alertMessage}
+  </div>
+)}
+
     </div>
     </div>
   );

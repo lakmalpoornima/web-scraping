@@ -97,3 +97,10 @@ td {
   overflow-y:scroll;
   height:400px !important;
 }
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Set the height of the container to 100% of the viewport height */
+}

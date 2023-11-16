@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 
 export default function Form() {
+  const [alertMessage, setAlertMessage] = useState(null);
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  
+    // Clear the alert after a few seconds
+    setTimeout(() => {
+      setAlertMessage(null);
+    }, 3000); // Adjust the time as needed
+  };
   
 const itemdata = {
   PId: '',
@@ -32,11 +42,10 @@ const [formData, setFormData] = useState(itemdata);
       });
 
       if (response.ok) {
-        console.log('Item submitted successfully');
         setFormData(itemdata);
-        // You can reset the form or handle the success as needed
+        showAlert('File submitted successfully');
       } else {
-        console.error('Failed to submit item');
+        showAlert('Failed to submit file');
       }
     } catch (error) {
       console.error('Error submitting item:', error);
@@ -208,6 +217,14 @@ const [formData, setFormData] = useState(itemdata);
       
       <button type="submit" class="btn btn-primary">Submit Item</button>
     </form>
+    <div className="fixed-top">
+    {alertMessage && (
+  <div className={`alert ${alertMessage.includes('success') ? 'alert-success' : 'alert-danger'}`}>
+    {alertMessage}
+  </div>
+)}
+
+    </div>
     </div>
   );
 }
