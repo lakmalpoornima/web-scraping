@@ -324,6 +324,7 @@ useEffect(()=> {
             <button
               onClick={() => openEditModal(item)}
               className="btn btn-primary"
+              
             >
               Edit
             </button>
